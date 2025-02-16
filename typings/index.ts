@@ -1,10 +1,16 @@
 export interface TimeCue {
   id: number;
   duration: number;  // in milliseconds
+  timeLeft: number;  // in milliseconds
   name: string;
   active: boolean;
   // createdAt: Date;
 
+}
+
+export interface PreviewStore{
+  clientId: string;
+  timerQueue: TimeCue[];
 }
 
 export interface TimeBreakdown {

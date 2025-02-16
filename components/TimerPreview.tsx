@@ -23,8 +23,7 @@ const TimerPreview = ({
 
   const {
     timeBreakdown
-  } = useTimer(timerCue)
-
+  } = useTimer(timerCue?.timeLeft || 0)
 
   return (
     <div className={clsx({ "text-9xl": largePreview, [`text-4xl`]: !largePreview, "font-bold": bold })}>

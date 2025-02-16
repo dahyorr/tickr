@@ -1,34 +1,36 @@
-import TimerPreview from "@/components/TimerPreview"
-import { TimeCue } from "@/typings"
+import { generateClientId } from "@/server/generateClientId"
 import clsx from "clsx"
 import { Orbitron } from 'next/font/google'
-
-// interface Props { }
+import { cookies } from "next/headers"
+import PreviewClientWrapper from "@/app/preview/PreviewClientWrapper"
+import { getPreviewQueue } from "@/server/getPreviewQueue"
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from '@tanstack/react-query'
 
 const orbitron = Orbitron({
   subsets: ['latin'],
 })
 
-const initialQueue: TimeCue[] = [
-  {
-    id: 1,
-    duration: 3600000,
-    name: "Test Timer",
-    active: true,
-  },
-]
+const TimerPreviewPage = async () => {
+  const cookiesStore = await cookies()
+  const serverClientId = cookiesStore.get("clientId")?.value
+  const queryClient = new QueryClient()
 
-// const TimerPreviewPage = (props: Props) => {
-const TimerPreviewPage = () => {
-  const timerQueue = initialQueue
-  const activeCue = timerQueue.find((cue) => cue.active)
+  await queryClient.prefetchQuery({
+    queryKey: ['preview', "queue", serverClientId],
+    queryFn: () => getPreviewQueue(serverClientId || ""),
+  })
 
+  const dehydratedState = dehydrate(queryClient)
 
   return (
-    <div className={clsx(orbitron.className, "h-screen flex justify-center items-center")}>
-      <div className="flex justify-center items-center h-full">
-        <TimerPreview timerCue={activeCue} showHours largePreview />
-      </div>
+    <div className={clsx(orbitron.className, "h-screen flex justify-center items-center relative")}>
+      <HydrationBoundary state={dehydratedState}>
+        <PreviewClientWrapper serverClientId={serverClientId} generateClientId={generateClientId} getPreviewQueue={getPreviewQueue} />
+      </HydrationBoundary>
     </div>
   )
 }

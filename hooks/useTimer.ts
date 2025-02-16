@@ -1,17 +1,30 @@
 "use client"
-import { TimeBreakdown, TimeCue } from "@/typings";
+import { TimeBreakdown } from "@/typings";
 import { useEffect, useState } from "react";
 
-export const useTimer = (cue?: TimeCue) => {
-  const [timeLeft, setTimeLeft] = useState(cue?.duration || 0);
+export const useTimer = (duration: number, options?: { countNegetive?: boolean }) => {
+  const [timeLeft, setTimeLeft] = useState(duration);
+  useEffect(() => {
+    setTimeLeft(duration);
+  }, [duration]);
 
   useEffect(() => {
+    if (duration <= 0) return;
     const interval = setInterval(() => {
-      setTimeLeft((prev) => prev - 1000);
+      setTimeLeft((prev) => {
+        if (prev > 0 && prev < 1000) {
+          return 0;
+        }
+        if (prev > 0 || options?.countNegetive) {
+          return prev - 1000;
+        }
+        clearInterval(interval);
+        return 0
+      });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [duration]);
 
   const timeBreakdown: TimeBreakdown = {
     days: Math.floor(timeLeft / 86400000),
@@ -20,8 +33,6 @@ export const useTimer = (cue?: TimeCue) => {
     seconds: Math.floor((timeLeft % 60000) / 1000),
     milliseconds: timeLeft
   }
-
-  console.log(timeLeft, timeBreakdown)
 
   return { timeLeft, timeBreakdown };
 }
