@@ -24,11 +24,9 @@ const TimerPreviewPage = async () => {
     queryFn: () => getPreviewQueue(serverClientId || ""),
   })
 
-  const dehydratedState = dehydrate(queryClient)
-
   return (
     <div className={clsx(orbitron.className, "h-screen flex justify-center items-center relative")}>
-      <HydrationBoundary state={dehydratedState}>
+      <HydrationBoundary state={dehydrate(queryClient)}>
         <PreviewClientWrapper serverClientId={serverClientId} generateClientId={generateClientId} getPreviewQueue={getPreviewQueue} />
       </HydrationBoundary>
     </div>
