@@ -3,6 +3,7 @@ import { Calendar, Monitor, Settings } from "lucide-react"
 import { Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import EventSwitcher from "./EventSwitcher"
 
 const eventItems = [
   {
@@ -22,6 +23,18 @@ const eventItems = [
   }
 ]
 
+const events = [
+  {
+    name: "Acme Inc",
+  },
+  {
+    name: "Acme Corp.",
+  },
+  {
+    name: "Evil Corp.",
+  },
+]
+
 const AppSidebar = () => {
   const pathname = usePathname()
 
@@ -31,7 +44,9 @@ const AppSidebar = () => {
       variant="sidebar"
       className="top-(--delta) h-[calc(100svh-var(--delta))]! [--delta:calc(var(--header-height)+1px)]"
     >
-      <SidebarHeader></SidebarHeader>
+      <SidebarHeader>
+        <EventSwitcher events={events} />
+      </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
           {eventItems.map(item => (

@@ -15,10 +15,10 @@ export async function BaseLayout({ children }: { children: React.ReactNode }) {
           <div className="flex flex-1">
             <AppSidebar />
             {/* <SidebarInset> */}
-              <main className="flex bg-red-500 flex-1 w-[calc(100%-var(--sidebar-width))]">
+              <main className="flex flex-1">
                 {children}
               </main>
-            {/* </SidebarInset> */}
+
           </div>
         </SidebarProvider>
       </div>
