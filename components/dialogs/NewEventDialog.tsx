@@ -5,9 +5,10 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Props {
   children: React.ReactNode;
@@ -19,16 +20,23 @@ const initialState: CreateEventActionState = {
   error: null,
 }
 const NewEventDialog = ({ children }: Props) => {
+  const [open, setOpen] = useState(false)
   const [state, formAction, isPending] = useActionState<CreateEventActionState, FormData>(createEventAction, initialState)
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     if (state.success && state.data && !isPending) {
+      setOpen(false)
+      queryClient.invalidateQueries({
+        queryKey: ["events"],
+      })
       toast.success("Event created successfully")
     }
-  }, [state, isPending])
+  }, [state, isPending, queryClient])
+
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {children || (<Button variant="outline">Create Profile</Button>)}
       </DialogTrigger>
@@ -41,13 +49,14 @@ const NewEventDialog = ({ children }: Props) => {
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4">
+            {state.error && <p className={"text-red-500 text-sm"}>{state.error}</p>}
             <div className="grid gap-3">
               <Label htmlFor="name-1">Name</Label>
-              <Input id="name" name="name" required />
+              <Input id="name" name="name" defaultValue={state.data?.name} required />
             </div>
             <div className="grid gap-3">
               <Label htmlFor="description">Description</Label>
-              <Textarea id="description" name="description" required />
+              <Textarea id="description" name="description" defaultValue={state.data?.description || ""} required />
             </div>
           </div>
           <DialogFooter>

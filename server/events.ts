@@ -44,7 +44,7 @@ export type CreateEventActionState = {
 
 export const createEventAction = async (_state: CreateEventActionState, formData: FormData) => {
   const rawEvent: EventInput = {
-    name: formData.get("date") as string,
+    name: formData.get("name") as string,
     description: formData.get("description") as string,
     date: formData.get("date") as string
     // startTime: formData.get("startTime") as string,
@@ -66,7 +66,7 @@ export const createEventAction = async (_state: CreateEventActionState, formData
       message = error.message
     }
     return {
-      data: null,
+      data: rawEvent,
       error: message,
       success: false,
     } as CreateEventActionState

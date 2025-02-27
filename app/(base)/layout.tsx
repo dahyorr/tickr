@@ -1,28 +1,26 @@
 // import { cookies } from "next/headers"
-import AppSidebar from "@/components/AppSidebar";
-import { SidebarProvider } from "@/components/ui/sidebar"
 import Navbar from "@/components/Navbar";
+import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import { getEvents } from "@/server/events";
 
 export async function BaseLayout({ children }: { children: React.ReactNode }) {
   // const cookieStore = await cookies()
   // const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
+  const queryClient = new QueryClient()
+  queryClient.prefetchQuery({
+    queryKey: ["events"],
+    queryFn: getEvents,
+  })
 
   return (
-    <div className="[--header-height:calc(--spacing(14))]">
-      <Navbar />
-      <div className="flex ">
-        <SidebarProvider defaultOpen={true} className="pt-(--header-height) flex flex-col">
-          <div className="flex flex-1">
-            <AppSidebar />
-            {/* <SidebarInset> */}
-              <main className="flex flex-1">
-                {children}
-              </main>
-
-          </div>
-        </SidebarProvider>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <div className="[--header-height:calc(--spacing(14))]">
+        <Navbar />
+        <div className="h-(--header-height)" />
+        {children}
       </div>
-    </div>
+    </HydrationBoundary>
+
   )
 }
 

@@ -1,9 +1,9 @@
-import NoEventPlaceholder from "@/components/NoEventPlaceholder"
+// import NoEventPlaceholder from "@/components/NoEventPlaceholder"
 
 const SchedulePage = () => {
   return (
     <div className="h-full w-full">
-      <NoEventPlaceholder/>
+      {/* <NoEventPlaceholder/> */}
     </div>
   )
 }
