@@ -1,8 +1,8 @@
 import { Plus } from "lucide-react"
 import { Button } from "./ui/button"
+import NewEventDialog from "./dialogs/NewEventDialog"
 
-interface Props { }
-const NoEventPlaceholder = (props: Props) => {
+const NoEventPlaceholder = () => {
   return (
     <div className="flex-col flex items-center justify-center h-full w-full">
       {/* add event */}
@@ -12,9 +12,11 @@ const NoEventPlaceholder = (props: Props) => {
         </div>
         <p className="text-lg">Add an event to get started</p>
       </div>
-      <Button className="">
-        <Plus /> Create Event
-      </Button>
+      <NewEventDialog >
+        <Button className="">
+          <Plus /> Create Event
+        </Button>
+      </NewEventDialog>
     </div>
   )
 }

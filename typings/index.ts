@@ -1,3 +1,5 @@
+import { eventsTable } from "@/lib/db/schema";
+
 export interface TimeCue {
   id: number;
   duration: number;  // in milliseconds
@@ -8,7 +10,7 @@ export interface TimeCue {
 
 }
 
-export interface PreviewStore{
+export interface PreviewStore {
   clientId: string;
   timerQueue: TimeCue[];
 }
@@ -28,3 +30,6 @@ export enum TimeUnitInMilliseconds {
   hours = 3600000,
   days = 86400000,
 }
+
+export type Event = typeof eventsTable.$inferSelect
+export type EventInput = typeof eventsTable.$inferInsert

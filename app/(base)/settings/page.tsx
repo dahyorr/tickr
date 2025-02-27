@@ -1,5 +1,5 @@
-interface Props {}
-const SettingsPage = (props: Props) => {
+
+const SettingsPage = () => {
   return (
     <div>SettingsPage</div>
   )

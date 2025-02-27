@@ -1,42 +1,68 @@
+"use client"
+import { createEventAction, CreateEventActionState } from "@/server/events";
 import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Textarea } from "../ui/textarea";
+import { useActionState, useEffect } from "react";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface Props {
   children: React.ReactNode;
 }
-const NewEventDialog = ({children}: Props) => {
+
+
+const initialState: CreateEventActionState = {
+  data: null,
+  error: null,
+}
+const NewEventDialog = ({ children }: Props) => {
+  const [state, formAction, isPending] = useActionState<CreateEventActionState, FormData>(createEventAction, initialState)
+
+  useEffect(() => {
+    if (state.success && state.data && !isPending) {
+      toast.success("Event created successfully")
+    }
+  }, [state, isPending])
+
   return (
     <Dialog>
-      <form>
-        <DialogTrigger asChild>
-          {children || (<Button variant="outline">Create Profile</Button>)}
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+      <DialogTrigger asChild>
+        {children || (<Button variant="outline">Create Profile</Button>)}
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <form className="gap-4 grid" action={formAction}>
           <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
+            <DialogTitle>New Event</DialogTitle>
             <DialogDescription>
-              Make changes to your profile here. Click save when you&apos;re
-              done.
+              Create a new event to get started
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4">
             <div className="grid gap-3">
               <Label htmlFor="name-1">Name</Label>
-              <Input id="name-1" name="name" defaultValue="Pedro Duarte" />
+              <Input id="name" name="name" required />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="username-1">Username</Label>
-              <Input id="username-1" name="username" defaultValue="@peduarte" />
+              <Label htmlFor="description">Description</Label>
+              <Textarea id="description" name="description" required />
             </div>
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" disabled={isPending}>Cancel</Button>
             </DialogClose>
-            <Button type="submit">Save changes</Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? (<>
+                <Loader2 className="animate-spin" />
+                Please wait
+              </>) : "Create"}
+            </Button>
           </DialogFooter>
-        </DialogContent>
-      </form>
+        </form>
+      </DialogContent>
     </Dialog>
   )
 }
