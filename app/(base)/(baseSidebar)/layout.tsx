@@ -9,7 +9,7 @@ export async function BaseLayout({ children }: { children: React.ReactNode }) {
   return (
 
     <div className="flex ">
-      <SidebarProvider defaultOpen={true} className="pt-(--header-height) flex flex-col">
+      <SidebarProvider defaultOpen={true} className="flex flex-col">
         <div className="flex flex-1">
           <AppSidebar />
           {/* <SidebarInset> */}

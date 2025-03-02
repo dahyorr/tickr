@@ -33,3 +33,15 @@ export const timersTable = pgTable("timers", (t) => ({
   ...timestamps
 }))
 
+export const clientsTable = pgTable("clients", (t) => ({
+  id: t.uuid().primaryKey().defaultRandom(),
+  shortId: t.varchar().notNull().unique(),
+  ...timestamps,
+}))
+
+export const eventClienteTable = pgTable("event_clients", (t) => ({
+  eventId: t.uuid("events").references(() => eventsTable.id),
+  clientId: t.uuid("clients").references(() => clientsTable.id),
+}))
+
+
