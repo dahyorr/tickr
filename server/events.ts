@@ -26,7 +26,14 @@ export const getEvents = async () => {
 
 export const getEventById = async (id: string) => {
   const event = await db.query.eventsTable.findFirst({
-    where: (events, { eq, or }) => or(eq(events.id, id), eq(events.shortId, id)),
+    where: (events, { eq }) => eq(events.id, id),
+  })
+  return event
+}
+
+export const getEventByShortId = async (id: string) => {
+  const event = await db.query.eventsTable.findFirst({
+    where: (events, { eq }) => eq(events.shortId, id),
   })
   return event
 }

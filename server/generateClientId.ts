@@ -1,6 +1,8 @@
 "use server"
 import { nanoid } from "nanoid"
 import { cookies } from "next/headers"
+import { registerClient } from "./clients"
+import { Client } from "@/typings"
 
 export const generateClientId = async () => {
   const clientId = `cl-${nanoid(10)}`
@@ -10,5 +12,6 @@ export const generateClientId = async () => {
     httpOnly: true,
     sameSite: "strict",
   })
-  return clientId
+  const client = await registerClient(clientId)
+  return [clientId, client] as [string, Client]
 }

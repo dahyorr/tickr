@@ -9,25 +9,41 @@ import {
   HydrationBoundary,
   QueryClient,
 } from '@tanstack/react-query'
+import { getClient, updateClient, updatePairingCode } from "@/server/clients"
+import { Client } from "@/typings"
 
 const orbitron = Orbitron({
   subsets: ['latin'],
 })
 
 const TimerPreviewPage = async () => {
+  let client: Client | undefined = undefined
   const cookiesStore = await cookies()
   const serverClientId = cookiesStore.get("clientId")?.value
   const queryClient = new QueryClient()
 
-  await queryClient.prefetchQuery({
-    queryKey: ['preview', "queue", serverClientId],
-    queryFn: () => getPreviewQueue(serverClientId || ""),
-  })
+  if (serverClientId) {
+    client = await getClient(serverClientId)
+    if (client) {
+      await updateClient(serverClientId)
+      await queryClient.prefetchQuery({
+        queryKey: ['preview', "queue", serverClientId],
+        queryFn: () => getPreviewQueue(serverClientId || ""),
+      })
+    }
+
+  }
 
   return (
     <div className={clsx(orbitron.className, "h-screen flex justify-center items-center relative")}>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <PreviewClientWrapper serverClientId={serverClientId} generateClientId={generateClientId} getPreviewQueue={getPreviewQueue} />
+        <PreviewClientWrapper
+          serverClientId={serverClientId}
+          generateClientId={generateClientId}
+          updatePairingCode={updatePairingCode}
+          getPreviewQueue={getPreviewQueue}
+          serverClient={client}
+        />
       </HydrationBoundary>
     </div>
   )

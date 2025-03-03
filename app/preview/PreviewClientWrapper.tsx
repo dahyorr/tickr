@@ -2,15 +2,19 @@
 import { useEffect, useState } from "react";
 import TimerPreview from "@/components/TimerPreview"
 import { useQuery } from "@tanstack/react-query";
-import { TimeCue } from "@/typings";
+import { Client, TimeCue } from "@/typings";
+import PreviewClientPairing from "@/components/PreviewClientPairing";
 
 interface Props {
   serverClientId?: string;
-  generateClientId: () => Promise<string>;
+  serverClient?: Client;
+  generateClientId: () => Promise<[string, Client]>;
+  updatePairingCode: (id: string) => Promise<Client>;
   getPreviewQueue: (clientId: string) => Promise<TimeCue[]>;
 }
-const PreviewClientWrapper = ({ serverClientId, generateClientId, getPreviewQueue }: Props) => {
+const PreviewClientWrapper = ({ serverClientId, serverClient, updatePairingCode, generateClientId, getPreviewQueue }: Props) => {
   const [clientId, setClientId] = useState(serverClientId || "")
+  const [client, setClient] = useState(serverClient)
   const { data: timerQueue } = useQuery({
     queryKey: ['preview', "queue", clientId],
     queryFn: () => getPreviewQueue(clientId),
@@ -20,17 +24,35 @@ const PreviewClientWrapper = ({ serverClientId, generateClientId, getPreviewQueu
 
   useEffect(() => {
     if (!clientId) {
-      generateClientId().then((newClientId) => {
+      generateClientId().then(([newClientId, newClient]) => {
         setClientId(newClientId)
+        if (newClient.requiresPairing && !newClient.pairingCode) {
+          updatePairingCode(newClientId).then((updatedClient) => {
+            if (updatedClient) {
+              setClient(updatedClient)
+            }
+            setClient(updatedClient)
+          })
+        }
+        else {
+          setClient(newClient)
+        }
       })
     }
-  })
+  }, [])
 
   return (
     <>
       <div className="flex flex-col justify-center items-center h-full">
-        <h1 className="text-6xl font-bold">{activeCue?.name}</h1>
-        <TimerPreview timerCue={activeCue} showHours largePreview />
+
+        {client?.requiresPairing
+          ? (<PreviewClientPairing pairingCode={client?.pairingCode || ""} />)
+          : (
+            <>
+              <h1 className="text-6xl font-bold">{activeCue?.name}</h1>
+              <TimerPreview timerCue={activeCue} showHours largePreview />
+            </>)
+        }
       </div>
 
       <div className="absolute top-0 right-0 p-2">
