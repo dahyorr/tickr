@@ -8,7 +8,7 @@ interface Props {
 
 const EventListItem = ({ event }: Props) => {
   return (
-    <Link href={`/${event.shortId}/schedule`}>
+    <Link href={`/${event.id}/schedule`}>
       <Card>
         <CardContent>
           <CardTitle>{event.name}</CardTitle>

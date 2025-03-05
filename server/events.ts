@@ -31,12 +31,6 @@ export const getEventById = async (id: string) => {
   return event
 }
 
-export const getEventByShortId = async (id: string) => {
-  const event = await db.query.eventsTable.findFirst({
-    where: (events, { eq }) => eq(events.shortId, id),
-  })
-  return event
-}
 
 export const createEvent = async (event: EventInput) => {
   const createdEvent = await db.insert(eventsTable).values(event).returning()

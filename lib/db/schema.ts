@@ -11,44 +11,36 @@ const timestamps = {
 const nanoid = customAlphabet(urlAlphabet, 12)
 
 export const eventsTable = pgTable("events", (t) => ({
-  id: t.uuid().primaryKey().defaultRandom(),
+  id: t.varchar().primaryKey().$default(() => `ev-${nanoid()}`),
   name: t.varchar().notNull(),
   description: t.varchar(),
-  shortId: t.varchar().notNull().unique().$default(() => `ev-${nanoid()}`),
   date: t.date(),
   startTime: t.time(),
   endTime: t.time(),
   ...timestamps
-}),
-  (table) => [
-    uniqueIndex("event_shortId_idx").on(table.shortId),
-  ])
+}))
 
 export const timersTable = pgTable("timers", (t) => ({
-  id: t.uuid().primaryKey().defaultRandom(),
+  id: t.varchar().primaryKey().$default(() => `ti-${nanoid()}`),
   title: t.varchar().notNull(),
   description: t.varchar(),
   duration: t.integer().notNull(),
-  shortId: t.varchar().notNull().unique().$default(() => `ti-${nanoid()}`),
-  eventId: t.uuid("events").references(() => eventsTable.id),
+  eventId: t.varchar("events").references(() => eventsTable.id),
   ...timestamps
 }))
 
 export const clientsTable = pgTable("clients", (t) => ({
-  id: t.uuid().primaryKey().defaultRandom(),
-  shortId: t.varchar().notNull().unique(),
+  id: t.varchar().primaryKey().$default(() => `cl-${nanoid()}`),
   lastActive: t.timestamp(),
   requiresPairing: t.boolean().notNull().default(true),
   pairingCode: t.varchar().unique().$default(() => generatePairingCode()),
   ...timestamps,
 }),
-  (table) => [
-    uniqueIndex("client_shortId_idx").on(table.shortId),
-  ])
+)
 
 export const eventClientsTable = pgTable("event_clients", (t) => ({
-  eventId: t.uuid("events").references(() => eventsTable.id),
-  clientId: t.uuid("clients").references(() => clientsTable.id),
+  eventId: t.varchar("events").references(() => eventsTable.id),
+  clientId: t.varchar("clients").references(() => clientsTable.id),
 }))
 
 

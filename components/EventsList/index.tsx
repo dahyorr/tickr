@@ -2,12 +2,16 @@
 
 import { getEvents } from "@/server/events"
 import { useQuery } from "@tanstack/react-query"
-import EventsListLoading from "./EventsListLoading"
+import EventsListLoading from "../ListLoading"
 import NoEventPlaceholder from "./NoEventPlaceholder"
 import EventListItem from "./EventListItem"
+import { Event } from "@/typings"
 
+interface Props {
+  getEvents: () => Promise<Event[]>
+}
 
-const EventsList = () => {
+const EventsList = ({ getEvents }: Props) => {
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["events"],

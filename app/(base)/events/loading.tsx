@@ -1,4 +1,4 @@
-import EventsListLoading from "@/components/EventsList/EventsListLoading"
+import EventsListLoading from "@/components/ListLoading"
 
 const EventsLoading = () => {
   return (

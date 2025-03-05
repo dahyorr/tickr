@@ -13,7 +13,7 @@ import { Event } from "@/typings";
 interface Props {
   children: React.ReactNode;
   eventId: string;
-  getEventByShortId: (id: string) => Promise<Event | undefined>;
+  getEventById: (id: string) => Promise<Event | undefined>;
 }
 
 const initialState: CreateEventClientActionState = {
@@ -21,11 +21,11 @@ const initialState: CreateEventClientActionState = {
   error: null,
 }
 
-const NewClientDialog = ({ children, eventId, getEventByShortId }: Props) => {
+const NewClientDialog = ({ children, eventId, getEventById }: Props) => {
 
   const { data: event } = useQuery({
     queryKey: ["events", eventId],
-    queryFn: () => getEventByShortId(eventId),
+    queryFn: () => getEventById(eventId),
   })
   const [open, setOpen] = useState(false)
   const [state, formAction, isPending] = useActionState<CreateEventClientActionState, FormData>(createEventClientAction, initialState)

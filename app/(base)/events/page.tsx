@@ -4,6 +4,7 @@ import NewEventDialog from "@/components/dialogs/NewEventDialog"
 import { Plus } from "lucide-react"
 import { Suspense } from "react"
 import EventsList from "@/components/EventsList"
+import { getEvents } from "@/server/events"
 
 const EventsPage = () => {
   return (
@@ -17,7 +18,7 @@ const EventsPage = () => {
         </NewEventDialog>
       </div>
       <Suspense fallback={<EventsLoading />}>
-        <EventsList />
+        <EventsList getEvents={getEvents} />
       </Suspense>
     </div>
   )
