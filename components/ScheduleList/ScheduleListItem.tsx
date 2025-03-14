@@ -1,6 +1,5 @@
-import { Client, ProgramSchedule } from "@/typings"
+import {  ProgramSchedule } from "@/typings"
 import { Card, CardContent, CardTitle } from "../ui/card"
-import dayjs from "dayjs"
 import { Button } from "../ui/button"
 
 interface Props {
