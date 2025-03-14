@@ -12,6 +12,7 @@ interface Props {
   updatePairingCode: (id: string) => Promise<Client>;
   getPreviewQueue: (clientId: string) => Promise<TimeCue[]>;
 }
+
 const PreviewClientWrapper = ({ serverClientId, serverClient, updatePairingCode, generateClientId, getPreviewQueue }: Props) => {
   const [clientId, setClientId] = useState(serverClientId || "")
   const [client, setClient] = useState(serverClient)
@@ -23,23 +24,22 @@ const PreviewClientWrapper = ({ serverClientId, serverClient, updatePairingCode,
   const activeCue = timerQueue?.find((cue) => cue.active)
 
   useEffect(() => {
-    if (!clientId) {
-      generateClientId().then(([newClientId, newClient]) => {
-        setClientId(newClientId)
-        if (newClient.requiresPairing && !newClient.pairingCode) {
-          updatePairingCode(newClientId).then((updatedClient) => {
-            if (updatedClient) {
-              setClient(updatedClient)
-            }
+    if (!clientId) return;
+    generateClientId().then(([newClientId, newClient]) => {
+      setClientId(newClientId)
+      if (newClient.requiresPairing && !newClient.pairingCode) {
+        updatePairingCode(newClientId).then((updatedClient) => {
+          if (updatedClient) {
             setClient(updatedClient)
-          })
-        }
-        else {
-          setClient(newClient)
-        }
-      })
-    }
-  }, [])
+          }
+          setClient(updatedClient)
+        })
+      }
+      else {
+        setClient(newClient)
+      }
+    })
+  }, [clientId, updatePairingCode, generateClientId])
 
   return (
     <>

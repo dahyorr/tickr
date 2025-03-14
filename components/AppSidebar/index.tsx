@@ -1,7 +1,7 @@
 import { Sidebar, SidebarContent, SidebarHeader } from "../ui/sidebar"
 import MenuOptions from "./Menu"
-import { getEvents } from "@/server/events"
-import EventSwitcher from "../EventSwitcher"
+import { getPrograms } from "@/server/programs"
+import ProgramSwitcher from "../ProgramSwitcher"
 
 const AppSidebar = () => {
 
@@ -12,7 +12,7 @@ const AppSidebar = () => {
       className="top-(--delta) h-[calc(100svh-var(--delta))]! [--delta:calc(var(--header-height)+1px)]"
     >
       <SidebarHeader>
-        <EventSwitcher getEvents={getEvents} />
+        <ProgramSwitcher getPrograms={getPrograms} />
       </SidebarHeader>
       <SidebarContent>
         <MenuOptions />

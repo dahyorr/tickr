@@ -1,8 +1,8 @@
 import ListLoading from "@/components/ListLoading"
 
-const EventsLoading = () => {
+const ProgramsLoading = () => {
   return (
     <ListLoading />
   )
 }
-export default EventsLoading
+export default ProgramsLoading

@@ -1,4 +1,4 @@
-import { pgTable, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, timestamp } from "drizzle-orm/pg-core";
 import { customAlphabet, urlAlphabet } from "nanoid";
 import { generatePairingCode } from "../utils";
 
@@ -10,8 +10,8 @@ const timestamps = {
 
 const nanoid = customAlphabet(urlAlphabet, 12)
 
-export const eventsTable = pgTable("events", (t) => ({
-  id: t.varchar().primaryKey().$default(() => `ev-${nanoid()}`),
+export const programsTable = pgTable("programs", (t) => ({
+  id: t.varchar().primaryKey().$default(() => `pg-${nanoid()}`),
   name: t.varchar().notNull(),
   description: t.varchar(),
   date: t.date(),
@@ -25,7 +25,16 @@ export const timersTable = pgTable("timers", (t) => ({
   title: t.varchar().notNull(),
   description: t.varchar(),
   duration: t.integer().notNull(),
-  eventId: t.varchar("events").references(() => eventsTable.id),
+  programId: t.varchar("programs").references(() => programsTable.id),
+  scheduleId: t.varchar("program_schedules").references(() => programSchedulesTable.id),
+  active: t.boolean().notNull().default(true),
+  ...timestamps
+}))
+
+export const programSchedulesTable = pgTable("program_schedules", (t) => ({
+  id: t.varchar().primaryKey().$default(() => `sc-${nanoid()}`),
+  title: t.varchar().notNull(),
+  programId: t.varchar("programs").references(() => programsTable.id),
   ...timestamps
 }))
 
@@ -38,8 +47,8 @@ export const clientsTable = pgTable("clients", (t) => ({
 }),
 )
 
-export const eventClientsTable = pgTable("event_clients", (t) => ({
-  eventId: t.varchar("events").references(() => eventsTable.id),
+export const programClientsTable = pgTable("program_clients", (t) => ({
+  programId: t.varchar("programs").references(() => programsTable.id),
   clientId: t.varchar("clients").references(() => clientsTable.id),
 }))
 

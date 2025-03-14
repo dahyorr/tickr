@@ -3,28 +3,28 @@ import { ChevronsUpDown, GalleryVerticalEnd, Plus } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "../ui/sidebar"
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu"
-import { Event } from "@/typings"
-import NewEventDialog from "../dialogs/NewEventDialog"
+import { Program } from "@/typings"
+import NewProgramDialog from "../dialogs/NewProgramDialog"
 import { useQuery } from "@tanstack/react-query"
 import { useParams, useRouter } from "next/navigation"
 
 interface Props {
-  getEvents: () => Promise<Event[]>
+  getPrograms: () => Promise<Program[]>
 }
 
-const EventSwitcher = ({ getEvents }: Props) => {
+const ProgramSwitcher = ({ getPrograms }: Props) => {
   const params = useParams()
   const router = useRouter()
-  const eventId = params.eventId
+  const programId = params.programId
   const { isMobile } = useSidebar()
   const { data, isLoading } = useQuery({
-    queryKey: ["events"],
-    queryFn: getEvents,
+    queryKey: ["programs"],
+    queryFn: getPrograms,
   })
-  const activeEvent = data?.find((event) => event.shortId === eventId || event.id === eventId)
+  const activeProgram = data?.find((program) => program.id === programId)
 
-  const onSelectEvent = (event: Event) => {
-    router.push(`/${event.shortId}/schedule`)
+  const onSelectProgram = (program: Program) => {
+    router.push(`/${program.id}/schedule`)
   }
 
   return (
@@ -32,7 +32,7 @@ const EventSwitcher = ({ getEvents }: Props) => {
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild disabled={isLoading}>
-            {activeEvent ? (
+            {activeProgram ? (
               <SidebarMenuButton
                 size="lg"
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
@@ -42,7 +42,7 @@ const EventSwitcher = ({ getEvents }: Props) => {
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {activeEvent.name}
+                    {activeProgram.name}
                   </span>
                 </div>
                 <ChevronsUpDown className="ml-auto" />
@@ -57,7 +57,7 @@ const EventSwitcher = ({ getEvents }: Props) => {
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">
-                      {"Select Event"}
+                      {"Select Program"}
                     </span>
                   </div>
                   <ChevronsUpDown className="ml-auto" />
@@ -71,29 +71,26 @@ const EventSwitcher = ({ getEvents }: Props) => {
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Events
+              Programs
             </DropdownMenuLabel>
-            {data?.map((event) => (
+            {data?.map((program) => (
               <DropdownMenuItem
-                key={event.name}
-                onClick={() => onSelectEvent(event)}
+                key={program.name}
+                onClick={() => onSelectProgram(program)}
                 className="gap-2 p-2"
               >
-                {/* <div className="flex size-6 items-center justify-center rounded-xs border">
-                  <event.logo className="size-4 shrink-0" />
-                </div> */}
-                {event.name}
+                {program.name}
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <NewEventDialog>
+            <NewProgramDialog>
               <DropdownMenuItem className="gap-2 p-2">
                 <div className="bg-background flex size-6 items-center justify-center rounded-md border">
                   <Plus className="size-4" />
                 </div>
-                <div className="text-muted-foreground font-medium">Add Event</div>
+                <div className="text-muted-foreground font-medium">Add Program</div>
               </DropdownMenuItem>
-            </NewEventDialog>
+            </NewProgramDialog>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
@@ -101,4 +98,4 @@ const EventSwitcher = ({ getEvents }: Props) => {
   )
 }
 
-export default EventSwitcher
+export default ProgramSwitcher

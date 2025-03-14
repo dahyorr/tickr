@@ -7,14 +7,14 @@ import NoClientsPlaceholder from "./NoClientsPlaceholder"
 import ClientListItem from "./ClientListItem"
 
 interface Props {
-  getClients: (eventId: string) => Promise<Client[]>
-  eventId: string
+  getClients: (programId: string) => Promise<Client[]>
+  programId: string
 }
-const ClientsList = ({ getClients, eventId }: Props) => {
+const ClientsList = ({ getClients, programId }: Props) => {
 
   const { data: clients, isLoading } = useQuery({
-    queryKey: ["events", eventId, "clients"],
-    queryFn: () => getClients(eventId),
+    queryKey: ["programs", programId, "clients"],
+    queryFn: () => getClients(programId),
   })
   if (isLoading) {
     return <ListLoading />

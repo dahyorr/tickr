@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Tickr",
-  description: "Tickr is a remote-controlled stage time management app designed to keep live events running smoothly. ",
+  description: "Tickr is a remote-controlled stage time management app designed to keep live events/programs running smoothly. ",
 };
 
 export default function RootLayout({

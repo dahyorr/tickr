@@ -3,7 +3,7 @@ import { SidebarMenu } from "../ui/sidebar"
 import { Calendar, Monitor, Settings } from "lucide-react"
 import MenuItem from "./MenuItem"
 
-const eventItems = [
+const programItems = [
   {
     title: "Schedule",
     url: "/schedule",
@@ -23,7 +23,7 @@ const eventItems = [
 const MenuOptions = () => {
   return (
     <SidebarMenu>
-    {eventItems.map(item => (
+    {programItems.map(item => (
       <MenuItem item={item} key={item.title} />
     ))}
   </SidebarMenu>

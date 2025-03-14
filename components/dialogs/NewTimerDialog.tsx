@@ -21,7 +21,7 @@ const initialState: CreateProgramClientActionState = {
   error: null,
 }
 
-const NewClientDialog = ({ children, programId, getProgramById }: Props) => {
+const NewTimerDialog = ({ children, programId, getProgramById }: Props) => {
 
   const { data: program } = useQuery({
     queryKey: ["programs", programId],
@@ -80,4 +80,4 @@ const NewClientDialog = ({ children, programId, getProgramById }: Props) => {
     </Dialog>
   )
 }
-export default NewClientDialog
+export default NewTimerDialog

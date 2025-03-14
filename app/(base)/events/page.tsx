@@ -1,26 +1,26 @@
-import EventsLoading from "./loading"
+import ProgramsLoading from "./loading"
 import { Button } from "@/components/ui/button"
-import NewEventDialog from "@/components/dialogs/NewEventDialog"
+import NewProgramDialog from "@/components/dialogs/NewProgramDialog"
 import { Plus } from "lucide-react"
 import { Suspense } from "react"
-import EventsList from "@/components/EventsList"
-import { getEvents } from "@/server/events"
+import ProgramsList from "@/components/ProgramsList"
+import { getPrograms } from "@/server/programs"
 
-const EventsPage = () => {
+const ProgramsPage = () => {
   return (
     <div className="relative mx-auto max-w-screen-xl px-4 py-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-semibold">Events</h1>
-        <NewEventDialog >
+        <h1 className="text-2xl font-semibold">Programs</h1>
+        <NewProgramDialog >
           <Button className="">
-            <Plus /> Create Event
+            <Plus /> Create Program
           </Button>
-        </NewEventDialog>
+        </NewProgramDialog>
       </div>
-      <Suspense fallback={<EventsLoading />}>
-        <EventsList getEvents={getEvents} />
+      <Suspense fallback={<ProgramsLoading />}>
+        <ProgramsList getPrograms={getPrograms} />
       </Suspense>
     </div>
   )
 }
-export default EventsPage
+export default ProgramsPage

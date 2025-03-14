@@ -1,68 +1,63 @@
 "use client"
+import { createProgramAction, CreateProgramActionState } from "@/server/actions";
 import { Button } from "../ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { Textarea } from "../ui/textarea";
 import { useActionState, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { createProgramClientAction, CreateProgramClientActionState } from "@/server/actions";
-import { Program } from "@/typings";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Props {
   children: React.ReactNode;
-  programId: string;
-  getProgramById: (id: string) => Promise<Program | undefined>;
 }
 
-const initialState: CreateProgramClientActionState = {
+
+const initialState: CreateProgramActionState = {
   data: null,
   error: null,
 }
-
-const NewClientDialog = ({ children, programId, getProgramById }: Props) => {
-
-  const { data: program } = useQuery({
-    queryKey: ["programs", programId],
-    queryFn: () => getProgramById(programId),
-  })
+const NewProgramDialog = ({ children }: Props) => {
   const [open, setOpen] = useState(false)
-  const [state, formAction, isPending] = useActionState<CreateProgramClientActionState, FormData>(createProgramClientAction, initialState)
+  const [state, formAction, isPending] = useActionState<CreateProgramActionState, FormData>(createProgramAction, initialState)
   const queryClient = useQueryClient()
 
   useEffect(() => {
     if (state.success && state.data && !isPending) {
       setOpen(false)
       queryClient.invalidateQueries({
-        queryKey: ["programs", programId, "clients"],
+        queryKey: ["programs"],
       })
-      toast.success("Client added successfully")
+      toast.success("Program created successfully")
     }
-  }, [state, isPending, queryClient, programId])
+  }, [state, isPending, queryClient])
 
-  if (!program) return null
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {children || (<Button variant="outline">Add Client</Button>)}
+        {children || (<Button variant="outline">Create Program</Button>)}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form className="gap-4 grid" action={formAction}>
           <DialogHeader>
-            <DialogTitle>New Client</DialogTitle>
+            <DialogTitle>New Program</DialogTitle>
             <DialogDescription>
-              Add new client
+              Create a new program to get started
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4">
             {state.error && <p className={"text-red-500 text-sm"}>{state.error}</p>}
             <div className="grid gap-3">
-              <Label htmlFor="name-1">Client Pairing Key</Label>
-              <Input id="clientKey" name="clientKey" defaultValue={state.data?.clientKey} required />
+              <Label htmlFor="name-1">Name</Label>
+              <Input id="name" name="name" defaultValue={state.data?.name} required />
             </div>
-            <Input id="programId" name="programId" type="hidden" defaultValue={program.id} required />
-
+            <div className="grid gap-3">
+              <Label htmlFor="description">Description</Label>
+              <Textarea id="description" name="description" defaultValue={state.data?.description || ""} required />
+            </div>
           </div>
           <DialogFooter>
             <DialogClose asChild>
@@ -72,7 +67,7 @@ const NewClientDialog = ({ children, programId, getProgramById }: Props) => {
               {isPending ? (<>
                 <Loader2 className="animate-spin" />
                 Please wait
-              </>) : "Add Client"}
+              </>) : "Create"}
             </Button>
           </DialogFooter>
         </form>
@@ -80,4 +75,4 @@ const NewClientDialog = ({ children, programId, getProgramById }: Props) => {
     </Dialog>
   )
 }
-export default NewClientDialog
+export default NewProgramDialog

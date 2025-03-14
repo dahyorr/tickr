@@ -13,8 +13,8 @@ interface Props {
 }
 const MenuItem = ({ item }: Props) => {
   const pathname = usePathname()
-  const { eventId } = useParams()
-  const url = `/${eventId}${item.url}`
+  const { programId } = useParams()
+  const url = `/${programId}${item.url}`
   return (
     <SidebarMenuItem >
       <SidebarMenuButton asChild isActive={pathname === url}>

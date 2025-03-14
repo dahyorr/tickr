@@ -1,63 +1,61 @@
 "use client"
-import { createEventAction, CreateEventActionState } from "@/server/events";
 import { Button } from "../ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Textarea } from "../ui/textarea";
 import { useActionState, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { createProgramClientAction, CreateProgramClientActionState } from "@/server/actions";
 
 interface Props {
   children: React.ReactNode;
+  programId: string;
 }
 
-
-const initialState: CreateEventActionState = {
+const initialState: CreateProgramClientActionState = {
   data: null,
   error: null,
 }
-const NewEventDialog = ({ children }: Props) => {
+
+const NewScheduleDialog = ({ children, programId }: Props) => {
+
   const [open, setOpen] = useState(false)
-  const [state, formAction, isPending] = useActionState<CreateEventActionState, FormData>(createEventAction, initialState)
+  const [state, formAction, isPending] = useActionState<CreateProgramClientActionState, FormData>(createProgramClientAction, initialState)
   const queryClient = useQueryClient()
 
   useEffect(() => {
     if (state.success && state.data && !isPending) {
       setOpen(false)
       queryClient.invalidateQueries({
-        queryKey: ["events"],
+        queryKey: ["programs", programId, "schedules"],
       })
-      toast.success("Event created successfully")
+      toast.success("Schedule added successfully")
     }
-  }, [state, isPending, queryClient])
-
+  }, [state, isPending, queryClient, programId])
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {children || (<Button variant="outline">Create Event</Button>)}
+        {children || (<Button variant="outline">Add Client</Button>)}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form className="gap-4 grid" action={formAction}>
           <DialogHeader>
-            <DialogTitle>New Event</DialogTitle>
+            <DialogTitle>New Client</DialogTitle>
             <DialogDescription>
-              Create a new event to get started
+              Add new client
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4">
             {state.error && <p className={"text-red-500 text-sm"}>{state.error}</p>}
             <div className="grid gap-3">
-              <Label htmlFor="name-1">Name</Label>
-              <Input id="name" name="name" defaultValue={state.data?.name} required />
+              <Label htmlFor="name-1">Client Pairing Key</Label>
+              <Input id="clientKey" name="clientKey" defaultValue={state.data?.clientKey} required />
             </div>
-            <div className="grid gap-3">
-              <Label htmlFor="description">Description</Label>
-              <Textarea id="description" name="description" defaultValue={state.data?.description || ""} required />
-            </div>
+            <Input id="programId" name="programId" type="hidden" defaultValue={programId} required />
+
           </div>
           <DialogFooter>
             <DialogClose asChild>
@@ -67,7 +65,7 @@ const NewEventDialog = ({ children }: Props) => {
               {isPending ? (<>
                 <Loader2 className="animate-spin" />
                 Please wait
-              </>) : "Create"}
+              </>) : "Add Client"}
             </Button>
           </DialogFooter>
         </form>
@@ -75,4 +73,4 @@ const NewEventDialog = ({ children }: Props) => {
     </Dialog>
   )
 }
-export default NewEventDialog
+export default NewScheduleDialog

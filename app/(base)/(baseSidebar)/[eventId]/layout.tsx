@@ -1,13 +1,13 @@
-import { getEventById } from "@/server/events"
+import { getProgramById } from "@/server/programs"
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query"
 
-const EventPageLayout = async ({ children, params }: { children: React.ReactNode, params: Promise<{ eventId: string }> }) => {
+const ProgramPageLayout = async ({ children, params }: { children: React.ReactNode, params: Promise<{ programId: string }> }) => {
 
-  const eventId = (await params).eventId
+  const programId = (await params).programId
   const queryClient = new QueryClient()
   queryClient.prefetchQuery({
-    queryKey: ["events", eventId],
-    queryFn: () => getEventById(eventId),
+    queryKey: ["programs", programId],
+    queryFn: () => getProgramById(programId),
   })
 
 
@@ -17,4 +17,4 @@ const EventPageLayout = async ({ children, params }: { children: React.ReactNode
     </HydrationBoundary>
   )
 }
-export default EventPageLayout
+export default ProgramPageLayout

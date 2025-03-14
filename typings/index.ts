@@ -1,4 +1,4 @@
-import { clientsTable, eventsTable } from "@/lib/db/schema";
+import { clientsTable, programSchedulesTable, programsTable } from "@/lib/db/schema";
 
 export interface TimeCue {
   id: number;
@@ -31,8 +31,11 @@ export enum TimeUnitInMilliseconds {
   days = 86400000,
 }
 
-export type Event = typeof eventsTable.$inferSelect
-export type EventInput = typeof eventsTable.$inferInsert
+export type Program = typeof programsTable.$inferSelect
+export type ProgramInput = typeof programsTable.$inferInsert
 
 export type Client = typeof clientsTable.$inferSelect
 export type ClientInput = typeof clientsTable.$inferInsert
+
+export type ProgramSchedule = typeof programSchedulesTable.$inferSelect
+export type ProgramScheduleInput = typeof programSchedulesTable.$inferInsert

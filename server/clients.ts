@@ -1,6 +1,6 @@
 "use server"
 import { db } from "@/lib/db"
-import { clientsTable, eventClientsTable } from "@/lib/db/schema"
+import { clientsTable, programClientsTable } from "@/lib/db/schema"
 import { generatePairingCode } from "@/lib/utils"
 import { eq } from "drizzle-orm"
 
@@ -37,12 +37,12 @@ export const getClientByPairingCode = async (pairingCode: string) => {
 }
 
 
-export const getEventClients = async (eventId: string) => {
+export const getProgramClients = async (programId: string) => {
   const clients = await db
-  .select()
-  .from(eventClientsTable)
-  .innerJoin(clientsTable, eq(eventClientsTable.clientId, clientsTable.id))
-  .where(eq(eventClientsTable.eventId, eventId));
+    .select()
+    .from(programClientsTable)
+    .innerJoin(clientsTable, eq(programClientsTable.clientId, clientsTable.id))
+    .where(eq(programClientsTable.programId, programId));
   return clients.map((client) => client.clients)
 }
 
@@ -56,46 +56,13 @@ export const updatePairingCode = async (id: string) => {
   return updatedClient?.[0]
 }
 
-
-export type CreateEventClientActionState = {
-  data: { clientKey: string } | null;
-  error: null | string;
-  success?: boolean;
-}
-
-export const createEventClientAction = async (_state: CreateEventClientActionState, formData: FormData) => {
-  const clientKey = formData.get('clientKey') as string
-  const eventId = formData.get('eventId') as string
-
-  try {
-    await createEventClient(eventId, clientKey)
-    return {
-      data: null,
-      error: null,
-      success: true,
-    } as CreateEventClientActionState
-  }
-  catch (error) {
-    console.log(error)
-    let message = 'Failed to add client'
-    if (error instanceof Error && error.message) {
-      message = error.message
-    }
-    return {
-      data: { clientKey },
-      error: message,
-      success: false,
-    } as CreateEventClientActionState
-  }
-}
-
-const createEventClient = async (eventId: string, clientKey: string) => {
+export const createProgramClient = async (programId: string, clientKey: string) => {
   const client = await getClientByPairingCode(clientKey)
   if (!client) {
     throw new Error('Client not found')
   }
-  await db.insert(eventClientsTable).values({
-    eventId,
+  await db.insert(programClientsTable).values({
+    programId,
     clientId: client.id
   })
   await db.update(clientsTable)
@@ -106,9 +73,9 @@ const createEventClient = async (eventId: string, clientKey: string) => {
     .where(eq(clientsTable.id, client.id))
 }
 
-// export const getClientsByEventId = async (eventId: string) => {
+// export const getClientsByProgramId = async (programId: string) => {
 //   const clients = await db.query.clientsTable.findMany({
-//     where: (clients, { eq }) => eq(clients.eventId, eventId)
+//     where: (clients, { eq }) => eq(clients.programId, programId)
 //   })
 //   return clients
 // }
