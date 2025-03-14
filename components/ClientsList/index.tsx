@@ -3,8 +3,8 @@
 import { Client } from "@/typings"
 import ListLoading from "../ListLoading"
 import { useQuery } from "@tanstack/react-query"
-import NoClientsPlaceholder from "./NoClientsPlaceholder"
 import ClientListItem from "./ClientListItem"
+import GenericPlaceholder from "../GenericPlaceholder"
 
 interface Props {
   getClients: (programId: string) => Promise<Client[]>
@@ -20,7 +20,7 @@ const ClientsList = ({ getClients, programId }: Props) => {
     return <ListLoading />
   }
   if (!clients || clients.length === 0) {
-    return <NoClientsPlaceholder />
+    return <GenericPlaceholder text="No Clients Available" />
   }
 
   return (

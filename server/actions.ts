@@ -1,8 +1,9 @@
 "use server"
 
-import { Program, ProgramInput } from "@/typings";
+import { Program, ProgramInput, ProgramSchedule, ProgramScheduleInput } from "@/typings";
 import { createProgramClient } from "./clients"
 import { createProgram } from "./programs"
+import { createProgramSchedule } from "./schedule";
 
 
 export type CreateProgramClientActionState = {
@@ -71,5 +72,39 @@ export const createProgramAction = async (_state: CreateProgramActionState, form
       error: message,
       success: false,
     } as CreateProgramActionState
+  }
+}
+
+export type CreateProgramScheduleActionState = {
+  data: ProgramSchedule | null;
+  error: null | string;
+  success?: boolean;
+}
+
+export const createProgramScheduleAction = async (_state: CreateProgramScheduleActionState, formData: FormData) => {
+  const rawSchedule: ProgramScheduleInput = {
+    title: formData.get("title") as string,
+    programId: formData.get("programId") as string,
+  }
+
+  try {
+    const createdSchedule = await createProgramSchedule(rawSchedule)
+    return {
+      data: createdSchedule,
+      error: null,
+      success: true,
+    } as CreateProgramScheduleActionState
+  }
+  catch (error) {
+    console.log(error)
+    let message = 'Failed to create schedule'
+    if (error instanceof Error && error.message) {
+      message = error.message
+    }
+    return {
+      data: rawSchedule,
+      error: message,
+      success: false,
+    } as CreateProgramScheduleActionState
   }
 }

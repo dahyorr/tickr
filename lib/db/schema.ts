@@ -25,7 +25,7 @@ export const timersTable = pgTable("timers", (t) => ({
   title: t.varchar().notNull(),
   description: t.varchar(),
   duration: t.integer().notNull(),
-  programId: t.varchar("programs").references(() => programsTable.id),
+  programId: t.varchar("programs").notNull().references(() => programsTable.id),
   scheduleId: t.varchar("program_schedules").references(() => programSchedulesTable.id),
   active: t.boolean().notNull().default(true),
   ...timestamps
@@ -34,7 +34,7 @@ export const timersTable = pgTable("timers", (t) => ({
 export const programSchedulesTable = pgTable("program_schedules", (t) => ({
   id: t.varchar().primaryKey().$default(() => `sc-${nanoid()}`),
   title: t.varchar().notNull(),
-  programId: t.varchar("programs").references(() => programsTable.id),
+  programId: t.varchar("programs").notNull().references(() => programsTable.id),
   ...timestamps
 }))
 
@@ -48,8 +48,8 @@ export const clientsTable = pgTable("clients", (t) => ({
 )
 
 export const programClientsTable = pgTable("program_clients", (t) => ({
-  programId: t.varchar("programs").references(() => programsTable.id),
-  clientId: t.varchar("clients").references(() => clientsTable.id),
+  programId: t.varchar("programs").notNull().references(() => programsTable.id),
+  clientId: t.varchar("clients").notNull().references(() => clientsTable.id),
 }))
 
 

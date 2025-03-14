@@ -7,14 +7,14 @@ import { useActionState, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { createProgramClientAction, CreateProgramClientActionState } from "@/server/actions";
+import { createProgramScheduleAction, CreateProgramScheduleActionState } from "@/server/actions";
 
 interface Props {
   children: React.ReactNode;
   programId: string;
 }
 
-const initialState: CreateProgramClientActionState = {
+const initialState: CreateProgramScheduleActionState = {
   data: null,
   error: null,
 }
@@ -22,7 +22,7 @@ const initialState: CreateProgramClientActionState = {
 const NewScheduleDialog = ({ children, programId }: Props) => {
 
   const [open, setOpen] = useState(false)
-  const [state, formAction, isPending] = useActionState<CreateProgramClientActionState, FormData>(createProgramClientAction, initialState)
+  const [state, formAction, isPending] = useActionState<CreateProgramScheduleActionState, FormData>(createProgramScheduleAction, initialState)
   const queryClient = useQueryClient()
 
   useEffect(() => {
@@ -38,21 +38,21 @@ const NewScheduleDialog = ({ children, programId }: Props) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {children || (<Button variant="outline">Add Client</Button>)}
+        {children || (<Button variant="outline">Add Schedule</Button>)}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form className="gap-4 grid" action={formAction}>
           <DialogHeader>
-            <DialogTitle>New Client</DialogTitle>
+            <DialogTitle>New Schedule</DialogTitle>
             <DialogDescription>
-              Add new client
+              Add new schedule
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4">
             {state.error && <p className={"text-red-500 text-sm"}>{state.error}</p>}
             <div className="grid gap-3">
-              <Label htmlFor="name-1">Client Pairing Key</Label>
-              <Input id="clientKey" name="clientKey" defaultValue={state.data?.clientKey} required />
+              <Label htmlFor="name-1">Schedule Name</Label>
+              <Input id="title" name="title" defaultValue={state.data?.title} required />
             </div>
             <Input id="programId" name="programId" type="hidden" defaultValue={programId} required />
 
@@ -65,7 +65,7 @@ const NewScheduleDialog = ({ children, programId }: Props) => {
               {isPending ? (<>
                 <Loader2 className="animate-spin" />
                 Please wait
-              </>) : "Add Client"}
+              </>) : "Add Schedule"}
             </Button>
           </DialogFooter>
         </form>

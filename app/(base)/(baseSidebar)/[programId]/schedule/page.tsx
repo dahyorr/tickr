@@ -24,7 +24,7 @@ const SchedulePage = async ({ params }: { params: Promise<{ programId: string }>
           <h1 className="text-2xl font-semibold">Schedule</h1>
           <NewScheduleDialog programId={programId} >
             <Button className="">
-              <Plus /> Add Timer
+              <Plus /> Add Schedule
             </Button>
           </NewScheduleDialog>
         </div>

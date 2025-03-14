@@ -1,9 +1,9 @@
 "use client"
 import { useQuery } from "@tanstack/react-query"
 import ListLoading from "../ListLoading"
-import ProgramPlaceholder from "./ProgramPlaceholder"
 import ProgramListItem from "./ProgramListItem"
 import { Program } from "@/typings"
+import GenericPlaceholder from "../GenericPlaceholder"
 
 interface Props {
   getPrograms: () => Promise<Program[]>
@@ -20,7 +20,7 @@ const ProgramsList = ({ getPrograms }: Props) => {
     return <ListLoading />
   }
   if (!programs || programs.length === 0) {
-    return <ProgramPlaceholder />
+    return <GenericPlaceholder text="No Programs Available" />
   }
 
   return (
