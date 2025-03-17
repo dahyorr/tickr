@@ -7,54 +7,66 @@ import { useActionState, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { createProgramClientAction, CreateProgramClientActionState } from "@/server/actions";
-
+import { createScheduleSegmentAction, CreateScheduleSegmentActionState } from "@/server/actions";
+import { Textarea } from "../ui/textarea";
 
 interface Props {
   children: React.ReactNode;
   programId: string;
+  scheduleId: string;
 }
 
-const initialState: CreateProgramClientActionState = {
+const initialState: CreateScheduleSegmentActionState = {
   data: null,
   error: null,
 }
 
-const NewClientDialog = ({ children, programId }: Props) => {
+const NewSegmentDialog = ({ children, programId, scheduleId }: Props) => {
 
   const [open, setOpen] = useState(false)
-  const [state, formAction, isPending] = useActionState<CreateProgramClientActionState, FormData>(createProgramClientAction, initialState)
+  const [state, formAction, isPending] = useActionState<CreateScheduleSegmentActionState, FormData>(createScheduleSegmentAction, initialState)
   const queryClient = useQueryClient()
 
   useEffect(() => {
     if (state.success && state.data && !isPending) {
       setOpen(false)
       queryClient.invalidateQueries({
-        queryKey: ["programs", programId, "clients"],
+        queryKey: ["programs", programId, "schedules", scheduleId, "segments"],
       })
-      toast.success("Client added successfully")
+      toast.success("Segment added successfully")
     }
-  }, [state, isPending, queryClient, programId])
+  }, [state, isPending, queryClient, programId, scheduleId])
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {children || (<Button variant="outline">Add Client</Button>)}
+        {children || (<Button variant="outline">Add Segment</Button>)}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form className="gap-4 grid" action={formAction}>
           <DialogHeader>
-            <DialogTitle>New Client</DialogTitle>
+            <DialogTitle>New Segment</DialogTitle>
             <DialogDescription>
-              Add new client
+              Add new segment
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4">
             {state.error && <p className={"text-red-500 text-sm"}>{state.error}</p>}
             <div className="grid gap-3">
-              <Label htmlFor="name-1">Client Pairing Key</Label>
-              <Input id="clientKey" name="clientKey" defaultValue={state.data?.clientKey} required />
+              <Label htmlFor="title">Segment Title</Label>
+              <Input id="title" name="title" defaultValue={state.data?.title} required />
             </div>
+
+            <div className="grid gap-3">
+              <Label htmlFor="description">Segment Description</Label>
+              <Textarea id="description" name="description" defaultValue={state.data?.description || ""} />
+            </div>
+
+            <div className="grid gap-3">
+              <Label htmlFor="duration">Segment Duration in seconds</Label>
+              <Input id="duration" name="duration" type="number" defaultValue={state.data?.duration} required />
+            </div>
+            <Input id="scheduleId" name="scheduleId" type="hidden" defaultValue={scheduleId} required />
             <Input id="programId" name="programId" type="hidden" defaultValue={programId} required />
 
           </div>
@@ -66,7 +78,7 @@ const NewClientDialog = ({ children, programId }: Props) => {
               {isPending ? (<>
                 <Loader2 className="animate-spin" />
                 Please wait
-              </>) : "Add Client"}
+              </>) : "Add Segment"}
             </Button>
           </DialogFooter>
         </form>
@@ -74,4 +86,4 @@ const NewClientDialog = ({ children, programId }: Props) => {
     </Dialog>
   )
 }
-export default NewClientDialog
+export default NewSegmentDialog

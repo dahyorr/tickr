@@ -1,4 +1,4 @@
-import { clientsTable, programSchedulesTable, programsTable } from "@/lib/db/schema";
+import { clientsTable, programSchedulesTable, programsTable, segmentsTable } from "@/lib/db/schema";
 
 export interface TimeCue {
   id: number;
@@ -39,3 +39,6 @@ export type ClientInput = typeof clientsTable.$inferInsert
 
 export type ProgramSchedule = typeof programSchedulesTable.$inferSelect
 export type ProgramScheduleInput = typeof programSchedulesTable.$inferInsert
+
+export type ScheduleSegment = typeof segmentsTable.$inferSelect
+export type ScheduleSegmentInput = typeof segmentsTable.$inferInsert

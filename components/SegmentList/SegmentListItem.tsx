@@ -1,19 +1,20 @@
-import { ProgramSchedule } from "@/typings"
+import { ScheduleSegment } from "@/typings"
 import { Card, CardContent, CardTitle } from "../ui/card"
 import { Button } from "../ui/button"
 import Link from "next/link"
 
 interface Props {
-  schedule: ProgramSchedule
+  segment: ScheduleSegment
 }
-const ScheduleListItem = ({ schedule }: Props) => {
+const SegmentListItem = ({ segment }: Props) => {
   return (
-    <Link href={schedule.id}>
+    <Link href={segment.id}>
       <Card className="py-4">
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="mb-1">{schedule.title}</CardTitle>
+              <CardTitle className="mb-1">{segment.title}</CardTitle>
+              <CardTitle className="mb-1">{segment.duration / 1000}</CardTitle>
             </div>
             <div className="flex gap-2">
               <Button>Edit</Button>
@@ -25,4 +26,4 @@ const ScheduleListItem = ({ schedule }: Props) => {
     </Link>
   )
 }
-export default ScheduleListItem
+export default SegmentListItem

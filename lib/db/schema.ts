@@ -1,4 +1,4 @@
-import { pgTable, timestamp } from "drizzle-orm/pg-core";
+import { AnyPgColumn, pgTable, timestamp } from "drizzle-orm/pg-core";
 import { customAlphabet, urlAlphabet } from "nanoid";
 import { generatePairingCode } from "../utils";
 
@@ -20,10 +20,11 @@ export const programsTable = pgTable("programs", (t) => ({
   ...timestamps
 }))
 
-export const timersTable = pgTable("timers", (t) => ({
-  id: t.varchar().primaryKey().$default(() => `ti-${nanoid()}`),
+export const segmentsTable = pgTable("segments", (t) => ({
+  id: t.varchar().primaryKey().$default(() => `sg-${nanoid()}`),
   title: t.varchar().notNull(),
   description: t.varchar(),
+  nextSegmentId: t.varchar().references((): AnyPgColumn => segmentsTable.id),
   duration: t.integer().notNull(),
   programId: t.varchar("programs").notNull().references(() => programsTable.id),
   scheduleId: t.varchar("program_schedules").references(() => programSchedulesTable.id),

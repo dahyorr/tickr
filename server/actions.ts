@@ -1,9 +1,10 @@
 "use server"
 
-import { Program, ProgramInput, ProgramSchedule, ProgramScheduleInput } from "@/typings";
+import { Program, ProgramInput, ProgramSchedule, ProgramScheduleInput, ScheduleSegment, ScheduleSegmentInput } from "@/typings";
 import { createProgramClient } from "./clients"
 import { createProgram } from "./programs"
 import { createProgramSchedule } from "./schedule";
+import { createScheduleSegment } from "./segments";
 
 
 export type CreateProgramClientActionState = {
@@ -106,5 +107,42 @@ export const createProgramScheduleAction = async (_state: CreateProgramScheduleA
       error: message,
       success: false,
     } as CreateProgramScheduleActionState
+  }
+}
+
+export type CreateScheduleSegmentActionState = {
+  data: ScheduleSegment | null;
+  error: null | string;
+  success?: boolean;
+}
+
+export const createScheduleSegmentAction = async (_state: CreateScheduleSegmentActionState, formData: FormData) => {
+  const rawSegment: ScheduleSegmentInput = {
+    title: formData.get("title") as string,
+    programId: formData.get("programId") as string,
+    description: formData.get("description") as string,
+    scheduleId: formData.get("scheduleId") as string,
+    duration: parseInt(formData.get("duration") as string) * 1000,
+  }
+
+  try {
+    const createdSegment = await createScheduleSegment(rawSegment)
+    return {
+      data: createdSegment,
+      error: null,
+      success: true,
+    } as CreateScheduleSegmentActionState
+  }
+  catch (error) {
+    console.log(error)
+    let message = 'Failed to create segment'
+    if (error instanceof Error && error.message) {
+      message = error.message
+    }
+    return {
+      data: rawSegment,
+      error: message,
+      success: false,
+    } as CreateScheduleSegmentActionState
   }
 }

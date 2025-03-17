@@ -3,7 +3,6 @@ import NewClientDialog from "@/components/dialogs/NewClientDialog"
 import ListLoading from "@/components/ListLoading"
 import { Button } from "@/components/ui/button"
 import { getProgramClients } from "@/server/clients"
-import { getProgramById } from "@/server/programs"
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query"
 import { Plus } from "lucide-react"
 import { Suspense } from "react"
@@ -23,7 +22,7 @@ const ClientsPage = async ({ params }: { params: Promise<{ programId: string }> 
       <div className="relative mx-auto max-w-screen-xl  w-full px-4 py-4">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-semibold">Clients</h1>
-          <NewClientDialog programId={programId} getProgramById={getProgramById}>
+          <NewClientDialog programId={programId}>
             <Button className="">
               <Plus /> Add Client
             </Button>
