@@ -1,5 +1,5 @@
 "use client"
-import { Pencil, Plus } from "lucide-react"
+import { ExternalLink, Pencil, Plus } from "lucide-react"
 import NewSegmentDialog from "../dialogs/NewSegmentDialog"
 import { Button } from "../ui/button"
 import { ProgramSchedule, ScheduleSegment } from "@/typings"
@@ -9,6 +9,7 @@ import { notFound } from "next/navigation"
 import { Suspense } from "react"
 import SegmentList from "../SegmentList"
 import { TabsTrigger, Tabs, TabsList, TabsContent } from "../ui/tabs"
+import Link from "next/link"
 
 interface Props {
   getProgramSchedule: (programId: string, scheduleId: string) => Promise<ProgramSchedule>
@@ -38,6 +39,11 @@ const ScheduleDetails = ({ scheduleId, programId, getProgramSchedule, getSchedul
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-semibold">{`${schedule?.title} ${schedule.title.includes("schedule") ? "" : "Schedule"}`}</h1>
         <div className="flex gap-2">
+          <Link target="_blank" href={`/ctrl/${programId}/${scheduleId}`}>
+            <Button className="">
+              <ExternalLink /> Go to Control View
+            </Button>
+          </Link>
           <NewSegmentDialog programId={programId} scheduleId={scheduleId} >
             <Button className="">
               <Plus /> Add Segment
@@ -50,23 +56,14 @@ const ScheduleDetails = ({ scheduleId, programId, getProgramSchedule, getSchedul
         </div>
       </div>
 
-      <Tabs defaultValue="segments" >
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="segments">Segments</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
-        </TabsList>
-        <TabsContent value="segments">
-          <Suspense fallback={<ListLoading />}>
-            <SegmentList programId={programId} scheduleId={scheduleId} getScheduleSegments={getScheduleSegments} />
-          </Suspense>
-        </TabsContent>
+      <Suspense fallback={<ListLoading />}>
+        <div className="flex justify-between  items-center my-2">
+          <h2 className="text-xl">Segments</h2>
 
-        <TabsContent value="settings">
-          <Suspense fallback={<ListLoading />}>
-            <SegmentList programId={programId} scheduleId={scheduleId} getScheduleSegments={getScheduleSegments} />
-          </Suspense>
-        </TabsContent>
-      </Tabs>
+        </div>
+
+        <SegmentList programId={programId} scheduleId={scheduleId} getScheduleSegments={getScheduleSegments} />
+      </Suspense>
     </>
   )
 }

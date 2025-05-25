@@ -3,7 +3,7 @@ import clsx from "clsx"
 import { Orbitron } from 'next/font/google'
 import { cookies } from "next/headers"
 import PreviewClientWrapper from "@/app/preview/PreviewClientWrapper"
-import { getPreviewQueue } from "@/server/getPreviewQueue"
+import { getPreviewQueue } from "@/server/getPreviewSegments"
 import {
   dehydrate,
   HydrationBoundary,

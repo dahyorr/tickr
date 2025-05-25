@@ -25,9 +25,10 @@ export const segmentsTable = pgTable("segments", (t) => ({
   title: t.varchar().notNull(),
   description: t.varchar(),
   nextSegmentId: t.varchar().references((): AnyPgColumn => segmentsTable.id),
+  orderIndex: t.integer().notNull().default(0),
   duration: t.integer().notNull(),
   programId: t.varchar("programs").notNull().references(() => programsTable.id),
-  scheduleId: t.varchar("program_schedules").references(() => programSchedulesTable.id),
+  scheduleId: t.varchar("program_schedules").notNull().references(() => programSchedulesTable.id),
   active: t.boolean().notNull().default(true),
   ...timestamps
 }))
@@ -44,6 +45,8 @@ export const clientsTable = pgTable("clients", (t) => ({
   lastActive: t.timestamp(),
   requiresPairing: t.boolean().notNull().default(true),
   pairingCode: t.varchar().unique().$default(() => generatePairingCode()),
+  activeProgramId: t.varchar("programs").references(() => programsTable.id),
+  activeScheduleId: t.varchar("program_schedules").references(() => programSchedulesTable.id),
   ...timestamps,
 }),
 )

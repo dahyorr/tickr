@@ -16,15 +16,20 @@ interface Props {
 const PreviewClientWrapper = ({ serverClientId, serverClient, updatePairingCode, generateClientId, getPreviewQueue }: Props) => {
   const [clientId, setClientId] = useState(serverClientId || "")
   const [client, setClient] = useState(serverClient)
+  // const [ready, setReady] = useState(false)
+
+  const canFetchQueue = !!clientId && !client?.requiresPairing
+
   const { data: timerQueue } = useQuery({
     queryKey: ['preview', "queue", clientId],
     queryFn: () => getPreviewQueue(clientId),
+    enabled: canFetchQueue
   })
 
   const activeCue = timerQueue?.find((cue) => cue.active)
 
   useEffect(() => {
-    if (!clientId) return;
+    if (clientId) return;
     generateClientId().then(([newClientId, newClient]) => {
       setClientId(newClientId)
       if (newClient.requiresPairing && !newClient.pairingCode) {
